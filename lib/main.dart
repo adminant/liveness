@@ -9,6 +9,7 @@ import 'dart:io';
 
 import 'package:camera_with_rtmp/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:liveness_rtmp/player.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
@@ -51,6 +52,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   //text: "rtmp://34.70.40.166:1935/LiveApp/815794454132232781694481");
 
   Timer _timer;
+  String tmpJpg;
+  CameraPreview cameraPreview;
 
   @override
   void initState() {
@@ -91,7 +94,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Camera example'),
+        title: const Text('Camera liveness'),
       ),
       body: Column(
         children: <Widget>[
@@ -154,7 +157,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         aspectRatio: controller.value.aspectRatio,
         child: Stack(
           children: [
-            CameraPreview(controller),
+            //controller.value.isStreamingVideoRtmp ? imagePreview() : CameraPreview(controller),
+            //cameraPreview,
+            //Camera(controller),
+            controller.value.isStreamingVideoRtmp ? Player() : CameraPreview(controller),
             Positioned(
               left: math.max(0, x),
               top: math.max(0, y),
@@ -173,6 +179,21 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           ],
         ),
       );
+    }
+  }
+
+
+  Widget imagePreview() {
+    print("tmpJpg :::::::::::::::::: $tmpJpg");
+    if(tmpJpg != null) {
+      File file = File(tmpJpg);
+      if(file.existsSync()) {
+        var bytes = file.readAsBytesSync();
+        Image image = Image.memory(bytes);
+        return image; //Image.file(File(tmpJpg));
+      } else return Container();
+    } else {
+      return Container();
     }
   }
 
@@ -348,6 +369,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     } on CameraException catch (e) {
       _showCameraException(e);
     }
+
+    cameraPreview = CameraPreview(controller);
 
     if (mounted) {
       setState(() {});
@@ -552,7 +575,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
         //var stats = await controller.getStreamStatistics();
         //print(stats);
-        this.setState(() { });
+        //tmpJpg = await takePicture();
+        //this.setState(() { });
+        //cameraPreview = CameraPreview(controller);
+        setState(() { });
       });
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -637,7 +663,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     final Directory extDir = await getApplicationDocumentsDirectory();
     final String dirPath = '${extDir.path}/Pictures/flutter_test';
     await Directory(dirPath).create(recursive: true);
-    final String filePath = '$dirPath/${timestamp()}.jpg';
+    //final String filePath = '$dirPath/${timestamp()}.jpg';
+    final String filePath = '$dirPath/tmp.jpg';
+    File f = File(filePath);
+    if(f.existsSync()) await f.delete();
 
     if (controller.value.isTakingPicture) {
       // A capture is already pending, do nothing.
@@ -667,6 +696,49 @@ class CameraApp extends StatelessWidget {
     );
   }
 }
+
+class Camera extends StatefulWidget {
+  @override
+  _CameraState createState() => _CameraState();
+
+  final CameraController controller;
+
+  Camera(this.controller);
+}
+
+class _CameraState extends State<Camera> {
+
+  @override
+  void initState() {
+    super.initState();
+    /*widget.controller = CameraController(cameras[0], ResolutionPreset.medium);
+    widget.controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });*/
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!widget.controller.value.isInitialized) {
+      return Container();
+    }
+
+    return AspectRatio(
+      aspectRatio: widget.controller.value.aspectRatio,
+      child: CameraPreview(widget.controller),
+    );
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.dispose();
+    super.dispose();
+  }
+}
+
 
 List<CameraDescription> cameras = [];
 
