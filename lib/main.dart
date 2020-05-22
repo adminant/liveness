@@ -265,14 +265,14 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               : null,
         ),
         IconButton(
-          icon: controller != null && controller.value.isRecordingPaused
+          icon: controller != null && (controller.value.isRecordingPaused || controller.value.isStreamingPaused)
               ? Icon(Icons.play_arrow)
               : Icon(Icons.pause),
           color: Colors.blue,
           onPressed: controller != null &&
                   controller.value.isInitialized &&
-                  controller.value.isRecordingVideo
-              ? (controller != null && controller.value.isRecordingPaused
+                  (controller.value.isRecordingVideo)
+              ? (controller != null && (controller.value.isRecordingPaused)
                   ? onResumeButtonPressed
                   : onPauseButtonPressed)
               : null,
@@ -282,8 +282,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           color: Colors.red,
           onPressed: controller != null &&
                   controller.value.isInitialized &&
-                  controller.value.isRecordingVideo
-              ? onStopButtonPressed
+              (controller.value.isRecordingVideo || controller.value.isStreamingVideoRtmp)
+              ? (controller.value.isStreamingVideoRtmp ? onStopStreamingButtonPressed : onStopButtonPressed)
               : null,
         )
       ],
@@ -378,7 +378,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     startVideoStreaming().then((String url) {
       if (mounted) setState(() {});
       if (url != null) showInSnackBar('Streaming video to $url');
-      Wakelock.enable();
+      //Wakelock.enable();
     });
   }
 
@@ -414,7 +414,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   void onStopStreamingButtonPressed() {
     stopVideoStreaming().then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Video not streaming to: $url');
+      showInSnackBar('Video streaming stopped to: $url');
     });
   }
 

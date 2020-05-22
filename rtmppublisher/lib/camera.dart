@@ -739,7 +739,7 @@ class CameraController extends ValueNotifier<CameraValue> {
     try {
       value = value.copyWith(isStreamingVideoRtmp: false);
       await _channel.invokeMethod<void>(
-        'stopVideoStreaming',
+        'stopStreaming',
         <String, dynamic>{'textureId': _textureId},
       );
     } on PlatformException catch (e) {
