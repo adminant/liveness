@@ -1,6 +1,6 @@
-# rtmppublisher_example
+# liveness app based on rtmppublisher_example
 
-Demonstrates how to use the rtmppublisher plugin.
+Send video stream using rtmp
 
 ## Getting Started
 
