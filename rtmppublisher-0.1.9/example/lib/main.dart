@@ -9,15 +9,9 @@ import 'dart:io';
 
 import 'package:camera_with_rtmp/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:liveness_rtmp/services/background.dart';
-import 'package:liveness_rtmp/services/network.dart';
-import 'package:liveness_rtmp/services/server.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
-
-import 'box.dart';
-import 'models/bbox.dart';
 
 class CameraExampleHome extends StatefulWidget {
   @override
@@ -51,12 +45,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   VideoPlayerController videoController;
   VoidCallback videoPlayerListener;
   bool enableAudio = true;
-  TextEditingController _textFieldController =
-      TextEditingController(text: "rtmp://rtmp.facecast.io/live/liveness1");
-  //text: "rtmp://34.70.40.166:1935/LiveApp/815794454132232781694481");
-
-  Background bg = Background.getInstance();
-  BBox bbox;
+  TextEditingController _textFieldController = TextEditingController(
+      text: "rtmp://34.70.40.166:1935/LiveApp/815794454132232781694481");
 
   Timer _timer;
 
@@ -98,7 +88,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('Camera liveness'),
+        title: const Text('Camera example'),
       ),
       body: Column(
         children: <Widget>[
@@ -155,20 +145,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         ),
       );
     } else {
-      //double x = 10, y = 20, w = 50, h = 60;
-
       return AspectRatio(
         aspectRatio: controller.value.aspectRatio,
-        child: Stack(
-          children: [
-            //controller.value.isStreamingVideoRtmp ? imagePreview() : CameraPreview(controller),
-            //cameraPreview,
-            //Camera(controller),
-            //controller.value.isStreamingVideoRtmp ? Player() : CameraPreview(controller),
-            CameraPreview(controller),
-            bbox != null ? Box(bbox) : Container(),
-          ],
-        ),
+        child: CameraPreview(controller),
       );
     }
   }
@@ -291,9 +270,10 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           icon: const Icon(Icons.stop),
           color: Colors.red,
           onPressed: controller != null &&
-              controller.value.isInitialized &&
-              (controller.value.isRecordingVideo || controller.value.isStreamingVideoRtmp)
-              ? (controller.value.isStreamingVideoRtmp ? onStopStreamingButtonPressed : onStopButtonPressed)
+                  controller.value.isInitialized &&
+                  (controller.value.isRecordingVideo ||
+                      controller.value.isStreamingVideoRtmp)
+              ? onStopButtonPressed
               : null,
         )
       ],
@@ -426,10 +406,9 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   void onStopStreamingButtonPressed() {
-    //stopVideoStreaming().then((_) {
-    stopEverything().then((_) {
+    stopVideoStreaming().then((_) {
       if (mounted) setState(() {});
-      showInSnackBar('Video streaming stopped to: $url');
+      showInSnackBar('Video not streaming to: $url');
     });
   }
 
@@ -602,12 +581,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       url = myUrl;
       await controller.startVideoStreaming(url);
       _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-        //var stats = await controller.getStreamStatistics();
-        //print(stats);
-        bbox = await bg.getBBox();
-        setState(() {
-
-        });
+        var stats = await controller.getStreamStatistics();
+        print(stats);
       });
     } on CameraException catch (e) {
       _showCameraException(e);
@@ -632,24 +607,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
       return null;
     }
 
-    //await _startVideoPlayer();
-  }
-
-  Future<void> stopEverything() async {
-    if (!controller.value.isStreamingVideoRtmp) {
-      return null;
-    }
-
-    try {
-      await controller.stopEverything();
-      if (_timer != null) {
-        _timer.cancel();
-        _timer = null;
-      }
-    } on CameraException catch (e) {
-      _showCameraException(e);
-      return null;
-    }
+    await _startVideoPlayer();
   }
 
   Future<void> pauseVideoStreaming() async {
@@ -743,10 +701,6 @@ class CameraApp extends StatelessWidget {
 List<CameraDescription> cameras = [];
 
 Future<void> main() async {
-  final Server server = Server(protocol: "https", address: "address", port: null);
-  final Network network = Network(server);
-  await Background.configure(network);
-
   // Fetch the available cameras before initializing the app.
   try {
     WidgetsFlutterBinding.ensureInitialized();
