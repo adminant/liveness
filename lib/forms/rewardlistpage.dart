@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:liveness_rtmp/forms/drawer.dart';
 import 'package:liveness_rtmp/services/storage.dart';
 
 
@@ -11,6 +12,7 @@ class RewardListPage extends StatelessWidget {
     return MaterialApp(
       title: 'Liveness App',
       home: Scaffold(
+        drawer: MyDrawer(),
         appBar: AppBar(
           title: Text('List of rewards'),
         ),
@@ -35,7 +37,12 @@ class RewardListPage extends StatelessWidget {
               onPressed: () => print(index),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
-              child: Text('$index. ' + list.elementAt(index)),
+              child: Row(
+                children: <Widget>[
+                  Text('$index. '),
+                  Text(list.elementAt(index)),
+                ],
+              ),
             ),
           );
         },

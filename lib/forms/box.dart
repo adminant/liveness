@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'dart:math' as math;
 
-import 'models/bbox.dart';
+import '../models/bbox.dart';
 
 class Box extends StatelessWidget {
 

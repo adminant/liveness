@@ -7,8 +7,8 @@ import 'package:liveness_rtmp/services/server.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
-import 'box.dart';
-import 'models/bbox.dart';
+import '../forms/box.dart';
+import '../models/bbox.dart';
 
 class CameraPage extends StatefulWidget {
   @override

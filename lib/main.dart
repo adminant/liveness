@@ -8,13 +8,12 @@ import 'dart:async';
 
 import 'package:camera_with_rtmp/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:liveness_rtmp/imghashpage.dart';
-import 'package:liveness_rtmp/rewardlistpage.dart';
+import 'package:liveness_rtmp/forms/imghashpage.dart';
 import 'package:liveness_rtmp/services/background.dart';
 import 'package:liveness_rtmp/services/network.dart';
 import 'package:liveness_rtmp/services/server.dart';
 
-import 'camerapage.dart';
+import 'forms/camerapage.dart';
 
 
 Future<void> main() async {
@@ -30,6 +29,5 @@ Future<void> main() async {
   } on CameraException catch (e) {
     logError(e.code, e.description);
   }
-  //runApp(MaterialApp(home: ImgHashPage()));
-  runApp(MaterialApp(home: RewardListPage()));
+  runApp(MaterialApp(home: ImgHashPage()));
 }

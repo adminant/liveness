@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:liveness_rtmp/camerapage.dart';
+import 'package:liveness_rtmp/forms/camerapage.dart';
+import 'package:liveness_rtmp/forms/drawer.dart';
 import 'package:liveness_rtmp/services/background.dart';
 
 class ImgHashPage extends StatelessWidget {
@@ -13,6 +14,7 @@ class ImgHashPage extends StatelessWidget {
     return MaterialApp(
       title: 'Liveness App',
       home: Scaffold(
+        drawer: MyDrawer(),
         appBar: AppBar(
           title: Text('Liveness App'),
         ),
