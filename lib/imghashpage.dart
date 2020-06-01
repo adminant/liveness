@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:liveness_rtmp/camerapage.dart';
+import 'package:liveness_rtmp/services/background.dart';
 
 class ImgHashPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -23,7 +24,7 @@ class ImgHashPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Please enter img_hash from your task description here',
+                Text('Please enter img_hash',
                   style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.deepPurple,
@@ -50,6 +51,7 @@ class ImgHashPage extends StatelessWidget {
                         },
                         onSaved: (val) {
                           //appData.img_hash = val;
+                          Background.getInstance().imgHash = val;
                         },
                         //autofocus: true,
                       ),

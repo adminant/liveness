@@ -9,12 +9,12 @@ class Background {
 
   Network _network;
   List<CameraDescription> _cameras = [];
+  String imgHash;
 
   bool _isSetup = false;
   bool get isConfigured => _isSetup;
 
   static Background _instance;
-
   Background._();
 
   static Background getInstance() {
