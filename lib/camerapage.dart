@@ -115,7 +115,7 @@ class _CameraPageState extends State<CameraPage>
             ),
           ),
           _captureControlRowWidget(),
-          //_toggleAudioWidget(),
+          _messageWidget(),
           Padding(
             padding: const EdgeInsets.all(5.0),
             child: Row(
@@ -186,6 +186,18 @@ class _CameraPageState extends State<CameraPage>
               : null,
         )
       ],
+    );
+  }
+
+  Widget _messageWidget() {
+    String msg = bg.imgHash;
+    return Padding(
+      padding: const EdgeInsets.only(left: 25),
+      child: Row(
+        children: <Widget>[
+          Text('Image Hash: $msg'),
+        ],
+      ),
     );
   }
 
